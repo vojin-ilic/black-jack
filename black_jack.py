@@ -65,7 +65,7 @@ class Dealer:
         self.hand = []
     def hit(self, deck):
         # append a card from the top of the deck to the hand
-        if self.get_value < 16 : 
+        if self.get_value() < 17: 
             self.hand.append(deck.pop())
     def show_hand(self):
         # print the cards in the hand
@@ -87,6 +87,5 @@ def game():
     # give player name from input
     name = input("your name here : ")
     player = Player(name)
-    dealer = Dealer
+    dealer = Dealer()
     deck = construct_deck()
-    
