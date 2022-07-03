@@ -89,3 +89,74 @@ def game():
     player = Player(name)
     dealer = Dealer()
     deck = construct_deck()
+    randomize_deck(deck)
+    while True:
+        if player.money == 0:
+            print("you are out of money")
+            break
+        play_round(player,dealer,deck)
+
+def play_round(player:Player,dealer:Dealer,deck):
+    # play a round of black jack
+    bet_amount = 0
+    while True:
+        bet_amount = int(input(f"bet amount must be < {player.money}: "))
+        if bet_amount > player.money:
+            print("not enough money")
+        else:
+            break
+    player.bet(bet_amount)
+    randomize_deck(deck)
+    play_turn(player,dealer,deck,bet_amount)
+    
+
+def play_turn(player:Player,dealer:Dealer,deck ,bet_amount):
+    # play a turn of black jack
+    dealer.hit(deck)
+    dealer.show_hand()
+    player.hit(deck)
+    player.show_hand()
+    
+    player_value = player.get_value()
+    if player_value > 21:
+        player.lose(bet_amount)
+        print("bust")
+        return
+    while True:
+        choice = input("hit or stay: ")
+        if choice == "hit":
+            player.hit(deck)
+            player.show_hand()
+            player_value = player.get_value()
+            if player_value > 21:
+                player.lose(bet_amount)
+                print("bust")
+                return
+        elif choice == "stay":
+            break
+        else:
+            print("invalid choice")
+    
+    dealer_value = dealer.get_value()
+    if dealer_value > 21:
+        player.win(bet_amount)
+        print("dealer bust")
+        return
+    while True:
+        if dealer_value < 17:
+            dealer.hit(deck)
+            dealer_value = dealer.get_value()
+        else:
+            break
+    if player_value > dealer_value:
+        player.win(bet_amount)
+        print("player wins")
+    elif player_value < dealer_value:
+        player.lose(bet_amount)
+        print("dealer wins")
+    else:
+        player.push()
+        print("push")
+    player.clear_hand()
+    dealer.clear_hand()
+
